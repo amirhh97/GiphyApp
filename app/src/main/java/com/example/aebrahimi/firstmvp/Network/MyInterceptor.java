@@ -1,14 +1,10 @@
 package com.example.aebrahimi.firstmvp.Network;
 
-import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
 import java.io.IOException;
 
-import javax.inject.Inject;
-
-import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
 
@@ -25,7 +21,7 @@ public class MyInterceptor implements okhttp3.Interceptor {
 
     @Override
     public Response intercept(okhttp3.Interceptor.Chain chain) throws IOException {
-        if (isConnected()) {
+        if (!isConnected()) {
             try {
                 throw new MyNetworkExcption();
             } catch (Exception e) {

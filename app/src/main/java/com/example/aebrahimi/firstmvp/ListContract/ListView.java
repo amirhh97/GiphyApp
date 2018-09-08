@@ -1,15 +1,13 @@
 package com.example.aebrahimi.firstmvp.ListContract;
 
-import android.content.Context;
-import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.Toast;
+import android.widget.RelativeLayout;
 
 import com.example.aebrahimi.firstmvp.App;
 import com.example.aebrahimi.firstmvp.Model.Item;
@@ -17,24 +15,11 @@ import com.example.aebrahimi.firstmvp.Network.MyNetworkExcption;
 import com.example.aebrahimi.firstmvp.R;
 import com.example.aebrahimi.firstmvp.TrendingAdapter;
 
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.Socket;
-import java.net.SocketAddress;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
-import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.Single;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
 
 public class ListView extends AppCompatActivity implements ListContract.View {
     @Inject
@@ -44,6 +29,8 @@ public class ListView extends AppCompatActivity implements ListContract.View {
     GridLayoutManager layoutManager;
     ProgressBar progressBar;
     ProgressBar enteryProgress;
+    RelativeLayout layout;
+    Snackbar snackbar;
     static boolean isOnline = false;
 
     @Override
@@ -53,6 +40,7 @@ public class ListView extends AppCompatActivity implements ListContract.View {
         recyclerView = findViewById(R.id.recycler_trend);
         progressBar = findViewById(R.id.progressBar);
         enteryProgress = findViewById(R.id.list_progress);
+        layout=findViewById(R.id.layout);
         App.getInjector().inject(this);
         presenter.attach(this);
         adapter = new TrendingAdapter(this, new ArrayList<Item>());
@@ -74,18 +62,12 @@ public class ListView extends AppCompatActivity implements ListContract.View {
                 }
             }
         });
+        try {
+            presenter.getListItems();
+        } catch (MyNetworkExcption myNetworkExcption) {
+            myNetworkExcption.printStackTrace();
 
-
-            try {
-                presenter.getListItems();
-            } catch (MyNetworkExcption myNetworkExcption) {
-                myNetworkExcption.printStackTrace();
-                presenter.getCachedListItem();
-                Toast.makeText(ListView.this, "No Connetion", Toast.LENGTH_SHORT).show();
-            }
-
-
-
+        }
 
     }
 
@@ -95,7 +77,23 @@ public class ListView extends AppCompatActivity implements ListContract.View {
         // adapter.notifyItemRangeInserted(adapter.getItemCount()-items.size(),adapter.getItemCount());
         adapter.notifyDataSetChanged();
         hideProgress();
+        //hideSnackBar();
 
+    }
+
+    @Override
+    public void showSnackBar() {
+        snackbar.make(layout,"Check Your Connection",Snackbar.LENGTH_INDEFINITE).setAction("Retry", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    presenter.getListItems();
+                } catch (MyNetworkExcption myNetworkExcption) {
+                    myNetworkExcption.printStackTrace();
+                }
+            }
+        }).show();
+        hideProgress();
     }
 
     @Override
@@ -104,9 +102,15 @@ public class ListView extends AppCompatActivity implements ListContract.View {
     }
 
     @Override
+    public void hideSnackBar() {
+        snackbar.dismiss();
+    }
+
+    @Override
     public void hideProgress() {
         progressBar.setVisibility(View.GONE);
         enteryProgress.setVisibility(View.GONE);
+
     }
 
     @Override
@@ -115,17 +119,5 @@ public class ListView extends AppCompatActivity implements ListContract.View {
         presenter.detach();
     }
 
-   /* public static boolean isOnline() {
-        try {
-            int timeoutMs = 1500;
-            Socket sock = new Socket();
-            SocketAddress sockaddr = new InetSocketAddress("8.8.8.8", 53);
-            sock.connect(sockaddr, timeoutMs);
-            sock.close();
-            return true;
-        } catch (IOException e) {
-            return false;
-        }
-    }*/
 }
 

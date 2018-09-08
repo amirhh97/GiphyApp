@@ -1,5 +1,7 @@
 package com.example.aebrahimi.firstmvp.ShowContract;
 
+import android.util.Log;
+
 import com.example.aebrahimi.firstmvp.BaseContract.BaseContract;
 import com.example.aebrahimi.firstmvp.Constants;
 import com.example.aebrahimi.firstmvp.Model.Item;
@@ -10,6 +12,7 @@ import java.lang.ref.WeakReference;
 
 import javax.inject.Inject;
 
+import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
@@ -59,7 +62,6 @@ public class ShowPresenterImp implements ShowContract.Presenter {
             item.setUrl(model.getData().getImage().getOriginalImage().getUrl());
             item.setOriginalUrl(model.getData().getImage().getOriginalImage().getUrl());
             item.setOriginalUrl(item.getOriginalUrl().replace("giphy_s", "200w"));
-            if(view.get()!=null)
             view.get().ShowRandomItem(item);
         };
     }

@@ -2,6 +2,7 @@ package com.example.aebrahimi.firstmvp.Dagger;
 
 import android.app.Application;
 import android.arch.persistence.room.Room;
+import android.content.Context;
 
 import com.example.aebrahimi.firstmvp.DataBase.AppDataBase;
 import com.example.aebrahimi.firstmvp.DataBase.Dao;

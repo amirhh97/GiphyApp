@@ -46,12 +46,6 @@ public class ShowView extends AppCompatActivity implements ShowContract.View {
     Disposable timerDisposable;
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        presenter.attach(this);
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show);
