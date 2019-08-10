@@ -7,7 +7,6 @@ package com.example.aebrahimi.firstmvp.BaseContract;
 public interface BaseContract {
     interface Presenter {
         void attach(View view);
-
         void detach();
     }
 

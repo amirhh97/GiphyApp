@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -26,6 +27,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import dagger.android.support.DaggerAppCompatActivity;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
@@ -33,7 +35,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 
 
-public class ShowView extends AppCompatActivity implements ShowContract.View {
+public class ShowView extends DaggerAppCompatActivity implements ShowContract.View {
     ImageView gifPreview;
     ProgressBar progressBar;
     ProgressBar horizentalProgressBar;
@@ -50,7 +52,6 @@ public class ShowView extends AppCompatActivity implements ShowContract.View {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show);
         //inject
-        App.getInjector().inject(this);
         presenter.attach(this);
         gifPreview = findViewById(R.id.gif_preview);
         progressBar = findViewById(R.id.progressBarShow);

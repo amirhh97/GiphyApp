@@ -17,6 +17,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
     //buildToolsVersion '27.0.3'
 
     compileOptions {
@@ -36,11 +37,11 @@ dependencies {
     implementation 'com.android.support:cardview-v7:27.0.1'
     implementation 'android.arch.lifecycle:extensions:1.1.0'
     implementation 'com.android.support:recyclerview-v7:27.0.2'
-    implementation 'com.google.dagger:dagger:2.11'
+    implementation 'com.google.dagger:dagger:2.24'
     //apt 'com.google.dagger:dagger-compiler:2.4'
-    annotationProcessor 'com.google.dagger:dagger-compiler:2.11'
-    annotationProcessor 'com.google.dagger:dagger-android-processor:2.11'
-    implementation 'com.google.dagger:dagger-android-support:2.11'
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.24'
+    annotationProcessor 'com.google.dagger:dagger-android-processor:2.24'
+    implementation 'com.google.dagger:dagger-android-support:2.24'
     provided 'javax.annotation:jsr250-api:1.0'
     implementation('com.github.bumptech.glide:glide:4.6.1') {
         exclude group: "com.android.support"

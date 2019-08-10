@@ -14,7 +14,7 @@ import io.reactivex.disposables.CompositeDisposable;
 /**
  * Created by aebrahimi on 8/14/2018 AD.
  */
-@Module
+/*@Module
 public class PresenterModule {
 
     @Provides
@@ -34,4 +34,4 @@ public class PresenterModule {
 
 
 
-}
+}*/

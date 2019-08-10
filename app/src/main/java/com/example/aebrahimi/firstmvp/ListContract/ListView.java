@@ -20,104 +20,103 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import dagger.android.support.DaggerAppCompatActivity;
 
-public class ListView extends AppCompatActivity implements ListContract.View {
-    @Inject
-    ListContract.Presenter presenter;
-    TrendingAdapter adapter;
-    RecyclerView recyclerView;
-    GridLayoutManager layoutManager;
-    ProgressBar progressBar;
-    ProgressBar enteryProgress;
-    RelativeLayout layout;
-    Snackbar snackbar;
-    static boolean isOnline = false;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        recyclerView = findViewById(R.id.recycler_trend);
-        progressBar = findViewById(R.id.progressBar);
-        enteryProgress = findViewById(R.id.list_progress);
-        layout=findViewById(R.id.layout);
-        App.getInjector().inject(this);
-        presenter.attach(this);
-        adapter = new TrendingAdapter(this, new ArrayList<Item>());
-        layoutManager = new GridLayoutManager(this, 2);
-        recyclerView.setLayoutManager(layoutManager);
-        adapter = new TrendingAdapter(this, new ArrayList<Item>());
-        recyclerView.setAdapter(adapter);
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                if (layoutManager.findLastCompletelyVisibleItemPosition() == adapter.getItemCount() - 1) {
-                    progressBar.setVisibility(View.VISIBLE);
-                    try {
-                        presenter.getListItems();
-                    } catch (MyNetworkExcption myNetworkExcption) {
-                        myNetworkExcption.printStackTrace();
-                    }
-                }
+public class ListView extends DaggerAppCompatActivity implements ListContract.View {
+   @Inject
+   ListContract.Presenter presenter;
+   TrendingAdapter adapter;
+   RecyclerView recyclerView;
+   GridLayoutManager layoutManager;
+   ProgressBar progressBar;
+   ProgressBar enteryProgress;
+   RelativeLayout layout;
+   Snackbar snackbar;
+   static boolean isOnline = false;
+
+   @Override
+   protected void onCreate(Bundle savedInstanceState) {
+      super.onCreate(savedInstanceState);
+      setContentView(R.layout.activity_main);
+      recyclerView = findViewById(R.id.recycler_trend);
+      progressBar = findViewById(R.id.progressBar);
+      enteryProgress = findViewById(R.id.list_progress);
+      layout = findViewById(R.id.layout);
+      presenter.attach(this);
+      adapter = new TrendingAdapter(this, new ArrayList<Item>());
+      layoutManager = new GridLayoutManager(this, 2);
+      recyclerView.setLayoutManager(layoutManager);
+      adapter = new TrendingAdapter(this, new ArrayList<Item>());
+      recyclerView.setAdapter(adapter);
+      recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+         @Override
+         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+            if (layoutManager.findLastCompletelyVisibleItemPosition() == adapter.getItemCount() - 1) {
+               progressBar.setVisibility(View.VISIBLE);
+               try {
+                  presenter.getListItems();
+               } catch (MyNetworkExcption myNetworkExcption) {
+                  myNetworkExcption.printStackTrace();
+               }
             }
-        });
-        try {
+         }
+      });
+      try {
+         presenter.getListItems();
+      } catch (MyNetworkExcption myNetworkExcption) {
+         myNetworkExcption.printStackTrace();
+
+      }
+
+   }
+
+   @Override
+   public void ShowItems(List<Item> items) {
+      adapter.Additems(items);
+      // adapter.notifyItemRangeInserted(adapter.getItemCount()-items.size(),adapter.getItemCount());
+      adapter.notifyDataSetChanged();
+      hideProgress();
+      //hideSnackBar();
+
+   }
+
+   @Override
+   public void showSnackBar() {
+      snackbar.make(layout, "Check Your Connection", Snackbar.LENGTH_INDEFINITE).setAction("Retry", v -> {
+         try {
+            enteryProgress.setVisibility(View.VISIBLE);
             presenter.getListItems();
-        } catch (MyNetworkExcption myNetworkExcption) {
+         } catch (MyNetworkExcption myNetworkExcption) {
             myNetworkExcption.printStackTrace();
+         }
+      }).show();
+      hideProgress();
+   }
 
-        }
+   @Override
+   public void showProgress() {
 
-    }
+   }
 
-    @Override
-    public void ShowItems(List<Item> items) {
-        adapter.Additems(items);
-        // adapter.notifyItemRangeInserted(adapter.getItemCount()-items.size(),adapter.getItemCount());
-        adapter.notifyDataSetChanged();
-        hideProgress();
-        //hideSnackBar();
+   @Override
+   public void hideSnackBar() {
+      snackbar.dismiss();
+   }
 
-    }
+   @Override
+   public void hideProgress() {
+      progressBar.setVisibility(View.GONE);
+      enteryProgress.setVisibility(View.GONE);
 
-    @Override
-    public void showSnackBar() {
-        snackbar.make(layout,"Check Your Connection",Snackbar.LENGTH_INDEFINITE).setAction("Retry", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    presenter.getListItems();
-                } catch (MyNetworkExcption myNetworkExcption) {
-                    myNetworkExcption.printStackTrace();
-                }
-            }
-        }).show();
-        hideProgress();
-    }
+   }
 
-    @Override
-    public void showProgress() {
-
-    }
-
-    @Override
-    public void hideSnackBar() {
-        snackbar.dismiss();
-    }
-
-    @Override
-    public void hideProgress() {
-        progressBar.setVisibility(View.GONE);
-        enteryProgress.setVisibility(View.GONE);
-
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        presenter.detach();
-    }
+   @Override
+   protected void onDestroy() {
+      super.onDestroy();
+      presenter.detach();
+   }
 
 }
 

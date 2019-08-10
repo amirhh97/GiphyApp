@@ -8,6 +8,7 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import io.reactivex.disposables.CompositeDisposable;
 
 /**
  * Created by SeyedAmirhoseinHoseini on 8/21/18.
@@ -19,5 +20,10 @@ public class AppModule {
     Application provideContext()
     {
         return App.getContext();
+    }
+    @Provides
+    CompositeDisposable provideCompositDisposable()
+    {
+        return  new CompositeDisposable();
     }
 }

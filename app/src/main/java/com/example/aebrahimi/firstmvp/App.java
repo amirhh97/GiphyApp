@@ -2,34 +2,39 @@ package com.example.aebrahimi.firstmvp;
 
 import android.app.Application;
 
-import com.example.aebrahimi.firstmvp.Dagger.AppModule;
 import com.example.aebrahimi.firstmvp.Dagger.DaggerInjector;
-import com.example.aebrahimi.firstmvp.Dagger.DataBaseModule;
 import com.example.aebrahimi.firstmvp.Dagger.Injector;
-import com.example.aebrahimi.firstmvp.Dagger.NetworkModule;
-import com.example.aebrahimi.firstmvp.Dagger.PresenterModule;
+
+import dagger.android.AndroidInjector;
+import dagger.android.support.DaggerApplication;
 
 
 /**
  * Created by aebrahimi on 8/15/2018 AD.
  */
 
-public class App extends Application {
-    private static Injector injector;
-    private static Application context;
-    @Override
-    public void onCreate() {
-        super.onCreate();
+public class App extends DaggerApplication {
+   private static Injector injector;
+   private static Application context;
 
-        injector = DaggerInjector.builder().networkModule(new NetworkModule()).dataBaseModule(new DataBaseModule()).appModule(new AppModule()).presenterModule(new PresenterModule()).build();
-        context=this;
-    }
+   @Override
+   public void onCreate() {
+      super.onCreate();
 
-    public static Injector getInjector() {
-        return injector;
-    }
-    public static Application getContext() {
-        return context;
-    }
+      //injector = DaggerInjector.builder().networkModule(new NetworkModule()).dataBaseModule(new DataBaseModule()).appModule(new AppModule())/*.presenterModule(new PresenterModule())*/.build();
+      context = this;
+   }
 
+   public static Injector getInjector() {
+      return injector;
+   }
+
+   public static Application getContext() {
+      return context;
+   }
+
+   @Override
+   protected AndroidInjector<? extends DaggerApplication> applicationInjector() {
+      return DaggerInjector.builder().create(this);
+   }
 }
